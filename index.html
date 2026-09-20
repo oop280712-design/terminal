@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xterm.js Web Terminal</title>
+  
+  <!-- 1. ดึงไฟล์ CSS ของ Xterm.js จาก CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+  
+  <!-- 2. ดึงไฟล์ CSS ที่เราแต่งเอง -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
+  <!-- 3. กรอบหน้าต่างจำลอง Terminal (Window UI) -->
+  <div class="window">
+    
+    <!-- 3.1 แถบ Header ด้านบนของหน้าต่าง -->
+    <div class="window-header">
+      <span class="dot red"></span>     <!-- ปุ่มสีแดง (Close) -->
+      <span class="dot yellow"></span>  <!-- ปุ่มสีเหลือง (Minimize) -->
+      <span class="dot green"></span>   <!-- ปุ่มสีเขียว (Maximize) -->
+      <span class="title">xterm.js — bash</span> <!-- ชื่อหัวข้อหน้าต่าง -->
+    </div>
+
+    <!-- 3.2 พื้นที่ที่จะให้ Xterm.js มาวาดหน้าจอ Terminal ลงไป -->
+    <div id="terminal"></div>
+    
+  </div>
+
+  <!-- 4. โหลด JavaScript ของ Xterm.js จาก CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+  
+  <!-- 5. โหลดไฟล์ JavaScript ที่เราเขียนตรรกะการทำงานไว้ -->
+  <script src="script.js"></script>
+</body>
+</html>
