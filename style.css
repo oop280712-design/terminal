@@ -1,1 +1,54 @@
+/* 1. จัดตำแหน่งหน้าจอหลัก (Background & Layout) */
+body {
+  background-color: #0d1117; /* สีพื้นหลังของทั้งหน้าเว็บ (โหมดมืดสไตล์ GitHub) */
+  margin: 0;                 /* ลบระยะขอบรอบนอกหน้าเว็บออก */
+  height: 100vh;             /* กำหนดความสูงให้เต็มหน้าจอ (100% Viewport Height) */
+  display: flex;             /* ใช้ Flexbox จัดตำแหน่งลูกๆ */
+  justify-content: center;   /* จัดให้อยู่ตรงกลางแนวนอน */
+  align-items: center;       /* จัดให้อยู่ตรงกลางแนวตั้ง */
+  font-family: system-ui, -apple-system, sans-serif; /* ฟอนต์ระบบสำหรับส่วนหัวหน้าต่าง */
+}
 
+/* 2. กรอบหน้าต่าง Terminal (Window Container) */
+.window {
+  width: 85%;               /* ความกว้าง 85% ของหน้าจอ */
+  max-width: 800px;         /* กว้างได้ไม่เกิน 800px */
+  background: #161b22;      /* สีพื้นหลังของกรอบ Terminal */
+  border-radius: 8px;       /* ทำมุมโค้งมน 8px */
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6); /* ใส่เงาฟุ้งด้านหลังให้ดูมีมิติ */
+  overflow: hidden;         /* ตัดส่วนที่ล้นขอบมุมโค้งมนออก */
+  border: 1px solid #30363d;/* เส้นขอบสีเทาเข้มบางๆ */
+}
+
+/* 3. แถบหัวหน้าต่างสไตล์ Mac/Linux (Header Bar) */
+.window-header {
+  background: #21262d;      /* สีพื้นหลังของแถบเมนูด้านบน */
+  padding: 10px 14px;       /* ระยะห่างภายใน (บน-ล่าง 10px, ซ้าย-ขวา 14px) */
+  display: flex;            /* เรียงปุ่มวงกลมและข้อความในแนวเดียวกัน */
+  align-items: center;      /* จัดวัตถุในแถบให้อยู่ตรงกลางแนวตั้ง */
+}
+
+/* 4. ปุ่มวงกลม 3 ปุ่ม (Traffic Light Buttons) */
+.dot {
+  width: 12px;              /* ความกว้างปุ่ม */
+  height: 12px;             /* ความสูงปุ่ม */
+  border-radius: 50%;       /* ปรับเป็นทรงกลมสนิท */
+  margin-right: 8px;        /* เว้นระยะห่างด้านขวาของแต่ละปุ่ม 8px */
+}
+
+/* สีของแต่ละปุ่ม */
+.red { background: #ff5f56; }   /* ปุ่มปิด (สีแดง) */
+.yellow { background: #ffbd2e; }/* ปุ่มย่อ (สีเหลือง) */
+.green { background: #27c93f; } /* ปุ่มขยาย (สีเขียว) */
+
+/* 5. ข้อความพาดหัวกลางแถบ (Header Title) */
+.title {
+  color: #8b949e;           /* สีข้อความ (เทาอ่อน) */
+  font-size: 13px;          /* ขนาดฟอนต์ */
+  margin: 0 auto;           /* ใช้ margin auto เพื่อดันข้อความให้อยู่ตรงกลางแถบพอดี */
+}
+
+/* 6. พื้นที่แสดงผล Terminal ของ Xterm.js */
+#terminal {
+  padding: 10px;            /* เว้นระยะห่างจากขอบด้านใน 10px ให้ตัวหนังสือไม่ติดขอบเกินไป */
+}
