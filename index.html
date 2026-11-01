@@ -3,36 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Xterm.js Web Terminal</title>
+  <title>Termux Web Terminal</title>
   
-  <!-- 1. ดึงไฟล์ CSS ของ Xterm.js จาก CDN -->
+  <!-- Xterm.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
-  
-  <!-- 2. ดึงไฟล์ CSS ที่เราแต่งเอง -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- 3. กรอบหน้าต่างจำลอง Terminal (Window UI) -->
-  <div class="window">
-    
-    <!-- 3.1 แถบ Header ด้านบนของหน้าต่าง -->
-    <div class="window-header">
-      <span class="dot red"></span>     <!-- ปุ่มสีแดง (Close) -->
-      <span class="dot yellow"></span>  <!-- ปุ่มสีเหลือง (Minimize) -->
-      <span class="dot green"></span>   <!-- ปุ่มสีเขียว (Maximize) -->
-      <span class="title">xterm.js — bash</span> <!-- ชื่อหัวข้อหน้าต่าง -->
+  <div class="termux-window">
+    <!-- แถบด้านบน: จำลองปุ่ม 3 ขีด, ชื่อ Tab และปุ่ม บวก/ลบ Tab -->
+    <div class="termux-top-bar">
+      <div class="left-controls">
+        <button id="menu-btn" title="Menu">≡</button>
+        <div id="tabs-container" class="tabs-container">
+          <!-- Tabs จะถูกสร้างขึ้นมาตรงนี้ด้วย JavaScript -->
+        </div>
+      </div>
+      <div class="right-controls">
+        <button id="add-tab-btn" title="New Tab">+</button>
+        <button id="close-tab-btn" title="Close Tab">-</button>
+      </div>
     </div>
 
-    <!-- 3.2 พื้นที่ที่จะให้ Xterm.js มาวาดหน้าจอ Terminal ลงไป -->
+    <!-- พื้นที่แสดงผล Terminal ของ Xterm.js -->
     <div id="terminal"></div>
-    
+
+    <!-- แถบปุ่มลัดด้านล่างแบบ Termux (Extra Keys) -->
+    <div class="termux-extra-keys">
+      <button class="key-btn" data-key="ESC">ESC</button>
+      <button class="key-btn" data-key="/">/</button>
+      <button class="key-btn" data-key="-">-</button>
+      <button class="key-btn" data-key="HOME">HOME</button>
+      <button class="key-btn" data-key="UP">▲</button>
+      <button class="key-btn" data-key="END">END</button>
+      <button class="key-btn" data-key="PGUP">PGUP</button>
+      <button class="key-btn" data-key="CTRL">CTRL</button>
+      <button class="key-btn" data-key="ALT">ALT</button>
+      <button class="key-btn" data-key="LEFT">◀</button>
+      <button class="key-btn" data-key="DOWN">▼</button>
+      <button class="key-btn" data-key="RIGHT">▶</button>
+      <button class="key-btn" data-key="PGDN">PGDN</button>
+    </div>
   </div>
 
-  <!-- 4. โหลด JavaScript ของ Xterm.js จาก CDN -->
+  <!-- Xterm.js Core & Addon Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
-  
-  <!-- 5. โหลดไฟล์ JavaScript ที่เราเขียนตรรกะการทำงานไว้ -->
+  <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.8.0/lib/addon-fit.js"></script>
+  <!-- Custom Application Script -->
   <script src="script.js"></script>
 </body>
 </html>
