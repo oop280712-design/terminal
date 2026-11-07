@@ -6,42 +6,41 @@ body {
   justify-content: center;
   align-items: center;
   font-family: monospace;
+  overflow: hidden;
 }
 
-/* กรอบหลักจำลองแอป Termux */
 .termux-window {
   width: 100vw;
   height: 100vh;
   background: #000000;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
-/* แถบด้านบน (ปุ่ม 3 ขีด และ Tab) */
 .termux-top-bar {
   background-color: #1f1f1f;
-  height: 40px;
+  height: 42px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 8px;
   border-bottom: 1px solid #333;
+  z-index: 10;
 }
 
 .left-controls, .right-controls {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .termux-top-bar button {
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 6px 10px;
   border-radius: 4px;
 }
 
@@ -49,7 +48,6 @@ body {
   background-color: #333;
 }
 
-/* รายการ Tabs */
 .tabs-container {
   display: flex;
   gap: 4px;
@@ -59,8 +57,8 @@ body {
 .tab-item {
   background-color: #2d2d2d;
   color: #aaa;
-  padding: 4px 12px;
-  font-size: 13px;
+  padding: 4px 10px;
+  font-size: 12px;
   border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
@@ -71,16 +69,76 @@ body {
   color: #fff;
 }
 
-/* พื้นที่ Xterm Terminal */
+.main-content-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 #terminal {
   flex: 1;
   width: 100%;
-  padding: 5px;
-  box-sizing: border-box;
+  height: 100%;
+  padding: 4px;
   background-color: #000000;
 }
 
-/* แถบปุ่มลัดพิเศษด้านล่าง (Termux Extra Keys) */
+/* หน้าต่าง File Browser (รูปโฟลเดอร์) */
+.file-manager-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #121212;
+  color: #fff;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+}
+
+.fm-header {
+  background-color: #1e1e1e;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  font-size: 13px;
+  color: #00ff66;
+}
+
+.fm-header button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.fm-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.fm-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.fm-item:hover {
+  background-color: #1f1f1f;
+}
+
+/* แถบ Extra Keys ด้านล่าง */
 .termux-extra-keys {
   background-color: #121212;
   display: flex;
