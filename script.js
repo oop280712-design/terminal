@@ -1,22 +1,29 @@
-// เก็บข้อมูลหลายๆ Tab
 let tabs = [];
 let activeTabId = null;
 let tabCounter = 1;
 
 const tabsContainer = document.getElementById('tabs-container');
+const fileManagerPanel = document.getElementById('file-manager');
+const fileListContainer = document.getElementById('file-list-container');
+
+// รายการไฟล์จำลองในเครื่อง (เก็บใน LocalStorage หรือค่าเริ่มต้น)
+let userFiles = JSON.parse(localStorage.getItem('termux_files') || JSON.stringify([
+  { name: 'index.html', type: 'file', size: '1.2 KB' },
+  { name: 'style.css', type: 'file', size: '840 B' },
+  { name: 'script.js', type: 'file', size: '3.4 KB' },
+  { name: 'my-cloud-phone', type: 'folder', size: '4 items' }
+]));
 
 // สร้าง Tab ใหม่
 function createNewTab(customName = null) {
   const tabId = 'tab_' + Date.now();
   const tabName = customName || `session ~ ${tabCounter++}`;
 
-  // สร้าง Element Terminal Div ซ่อนไว้ก่อน
   const termDiv = document.createElement('div');
   termDiv.style.width = '100%';
   termDiv.style.height = '100%';
   document.getElementById('terminal').appendChild(termDiv);
 
-  // สร้าง Xterm Instance
   const term = new Terminal({
     cursorBlink: true,
     theme: {
@@ -33,9 +40,8 @@ function createNewTab(customName = null) {
   term.open(termDiv);
   fitAddon.fit();
 
-  // ข้อความต้อนรับจำลอง Linux Environment
   term.writeln('\x1b[1;32mWelcome to Termux Web Environment (Linux 6.1)\x1b[0m');
-  term.writeln("Type 'help' for available commands.\r\n");
+  term.writeln("Type 'help', 'ls', or click the folder icon above to view files.\r\n");
   const promptText = '\x1b[1;34m~ $\x1b[0m ';
   term.write(promptText);
 
@@ -43,7 +49,6 @@ function createNewTab(customName = null) {
   let history = JSON.parse(localStorage.getItem('termux_history') || '[]');
   let historyIndex = history.length;
 
-  // ดักจับปุ่มพิมพ์
   term.onData(e => {
     switch (e) {
       case '\r':
@@ -99,13 +104,11 @@ function createNewTab(customName = null) {
     currentInput = '';
   }
 
-  // บันทึก Tab ลง Array
   tabs.push({ id: tabId, name: tabName, term, fitAddon, div: termDiv });
   renderTabs();
   switchTab(tabId);
 }
 
-// สลับ Tab
 function switchTab(tabId) {
   activeTabId = tabId;
   tabs.forEach(t => {
@@ -119,9 +122,8 @@ function switchTab(tabId) {
   renderTabs();
 }
 
-// ปิด Tab ปัจจุบัน
 function closeActiveTab() {
-  if (tabs.length <= 1) return; // อย่าปิดหมด ให้เหลืออย่างน้อย 1 Tab
+  if (tabs.length <= 1) return;
   const index = tabs.findIndex(t => t.id === activeTabId);
   if (index !== -1) {
     tabs[index].div.remove();
@@ -130,7 +132,6 @@ function closeActiveTab() {
   }
 }
 
-// วาด UI แถบ Tab ด้านบน
 function renderTabs() {
   tabsContainer.innerHTML = '';
   tabs.forEach(t => {
@@ -142,25 +143,62 @@ function renderTabs() {
   });
 }
 
-// จัดการคำสั่ง Linux จำลอง
+// ฟังก์ชันเปิดดูไฟล์ในเครื่อง (File Manager)
+function openFileManager() {
+  fileListContainer.innerHTML = '';
+  userFiles.forEach(file => {
+    const item = document.createElement('div');
+    item.className = 'fm-item';
+    item.innerHTML = `
+      <span>${file.type === 'folder' ? '📁' : '📄'}</span>
+      <div style="flex: 1;">
+        <div style="color: #fff; font-weight: bold;">${file.name}</div>
+        <div style="color: #888; font-size: 11px;">${file.size}</div>
+      </div>
+    `;
+    item.onclick = () => {
+      const activeT = tabs.find(t => t.id === activeTabId);
+      if (activeT) {
+        fileManagerPanel.style.display = 'none';
+        activeT.term.writeln(`\nOpening ${file.name}...`);
+        activeT.term.write('\x1b[1;34m~ $\x1b[0m ');
+      }
+    };
+    fileListContainer.appendChild(item);
+  });
+  fileManagerPanel.style.display = 'flex';
+}
+
+// จัดการคำสั่ง Linux
 function handleCommand(term, cmd) {
   if (!cmd) return;
   const parts = cmd.split(' ');
   switch (parts[0].toLowerCase()) {
     case 'help':
-      term.writeln('Commands: uname, pkg update, python, clear, exit');
+      term.writeln('Commands: ls, mkdir <dir>, touch <file>, clear, exit');
       break;
-    case 'uname':
-      term.writeln('Linux termux-web 6.1.0-armv7l Android Terminal');
+    case 'ls':
+      userFiles.forEach(f => {
+        term.writeln(f.type === 'folder' ? `\x1b[1;34m${f.name}/\x1b[0m` : f.name);
+      });
       break;
-    case 'pkg':
-      term.writeln('Reading package lists... Done');
-      term.writeln('Building dependency tree... Done');
-      term.writeln('All packages are up to date.');
+    case 'mkdir':
+      if (parts[1]) {
+        userFiles.push({ name: parts[1], type: 'folder', size: '0 items' });
+        localStorage.setItem('termux_files', JSON.stringify(userFiles));
+        term.writeln(`Created directory: ${parts[1]}`);
+      } else {
+        term.writeln('mkdir: missing operand');
+      }
       break;
-    case 'python':
-      term.writeln('Python 3.11.2 (main, Jan 2026)');
-      term.writeln('Type "exit()" to leave.');
+    case 'touch':
+      if (parts[1]) {
+        userFiles.push({ name: parts[1], type: 'file', size: '0 B' });
+        localStorage.setItem('termux_files', JSON.stringify(userFiles));
+        term.writeln(`Created file: ${parts[1]}`);
+      } else {
+        term.writeln('touch: missing operand');
+      }
       break;
     case 'clear':
       term.clear();
@@ -170,19 +208,20 @@ function handleCommand(term, cmd) {
   }
 }
 
-// ปุ่มกดเพิ่ม/ลบ Tab ด้านบน
+// Event Listeners สำหรับปุ่มด้านบน
 document.getElementById('add-tab-btn').onclick = () => createNewTab();
 document.getElementById('close-tab-btn').onclick = () => closeActiveTab();
+document.getElementById('files-btn').onclick = () => openFileManager();
+document.getElementById('close-fm').onclick = () => { fileManagerPanel.style.display = 'none'; };
 
-// ปุ่ม 3 ขีด (Menu) จำลองเปิดเมนู
 document.getElementById('menu-btn').onclick = () => {
   const activeT = tabs.find(t => t.id === activeTabId);
   if (activeT) {
-    activeT.term.writeln('\n[Termux Menu]: 1. New Session  2. Kill Process  3. Settings');
+    activeT.term.writeln('\n[Termux Menu]: 1. New Session  2. File Manager  3. Settings');
   }
 };
 
-// เชื่อมการทำงานของแถบปุ่มลัดด้านล่าง (Extra Keys) ให้ส่งค่าเข้า Terminal Active
+// เชื่อมปุ่ม Extra Keys ด้านล่าง
 document.querySelectorAll('.key-btn').forEach(button => {
   button.onclick = () => {
     const activeT = tabs.find(t => t.id === activeTabId);
@@ -196,13 +235,10 @@ document.querySelectorAll('.key-btn').forEach(button => {
     else if (key === 'ESC') activeT.term.onData('\x1b');
     else if (key === '/') activeT.term.onData('/');
     else if (key === '-') activeT.term.onData('-');
-    else if (key === 'CTRL') activeT.term.writeln('^[Ctrl mode toggled]');
-    else if (key === 'ALT') activeT.term.writeln('^[Alt mode toggled]');
     else {
       activeT.term.writeln(`[Key: ${key}]`);
     }
   };
 });
 
-// เริ่มต้นเปิดเว็บมาให้มี 1 Tab แรกทันที
 createNewTab();
