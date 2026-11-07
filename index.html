@@ -1,25 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Termux Web Terminal</title>
-  
-  <!-- Xterm.js CSS -->
+  <title>Termux Web Terminal & File Manager</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
-  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <div class="termux-window">
-    <!-- แถบด้านบน: จำลองปุ่ม 3 ขีด, ชื่อ Tab และปุ่ม บวก/ลบ Tab -->
+    <!-- แถบด้านบน: ปุ่ม Menu (3 ขีด), Tabs, และปุ่มจัดการไฟล์ (Folder Icon) -->
     <div class="termux-top-bar">
       <div class="left-controls">
         <button id="menu-btn" title="Menu">≡</button>
-        <div id="tabs-container" class="tabs-container">
-          <!-- Tabs จะถูกสร้างขึ้นมาตรงนี้ด้วย JavaScript -->
-        </div>
+        <button id="files-btn" title="File Manager">📁</button>
+        <div id="tabs-container" class="tabs-container"></div>
       </div>
       <div class="right-controls">
         <button id="add-tab-btn" title="New Tab">+</button>
@@ -27,8 +23,22 @@
       </div>
     </div>
 
-    <!-- พื้นที่แสดงผล Terminal ของ Xterm.js -->
-    <div id="terminal"></div>
+    <!-- พื้นที่แสดงผลหลัก (สลับระหว่างหน้า Terminal กับ หน้า File Manager) -->
+    <div class="main-content-area">
+      <!-- หน้าต่าง File Browser (จำลองโฟลเดอร์ในเครื่อง) -->
+      <div id="file-manager" class="file-manager-panel" style="display: none;">
+        <div class="fm-header">
+          <span>📂 ~/storage/shared/projects</span>
+          <button id="close-fm">✕</button>
+        </div>
+        <div class="fm-list" id="file-list-container">
+          <!-- รายการไฟล์จะถูกสร้างด้วย JavaScript -->
+        </div>
+      </div>
+
+      <!-- พื้นที่ Terminal -->
+      <div id="terminal"></div>
+    </div>
 
     <!-- แถบปุ่มลัดด้านล่างแบบ Termux (Extra Keys) -->
     <div class="termux-extra-keys">
@@ -48,10 +58,8 @@
     </div>
   </div>
 
-  <!-- Xterm.js Core & Addon Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.8.0/lib/addon-fit.js"></script>
-  <!-- Custom Application Script -->
   <script src="script.js"></script>
 </body>
 </html>
